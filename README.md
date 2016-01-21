@@ -1,2 +1,26 @@
 # calendar
 using BinarySearchTree and Hashmap
+
+Assignment (Part 1):
+
+Download BinaryNodeDS and BinarySearchTree, as well as DuplicateItemException and ItemNotFoundException. Note that these are different from the versions we discussed in class; I combined the methods of two different BinaryNode classes from the textbook (one for plain BinaryTrees, the other for BinarySeachTrees) and I added some methods from the BinaryTree class - specifically the printPreorder, printInorder, and printPostorder methods - to the BinarySearchTree class.
+
+Over a couple of weeks, we will implement a very simple calendar/datebook application. For version 1, we'll create individual appointments, and keep them in a BinarySearchTree sorted by date/time. This week's lab will deal with the following problem: as time passes, the BinarySearchTree will get more and more unbalanced, since we'll be adding events that occur farther into the future as we ourselves get farther into the future. We can deal with this by using a balanced BST, such as an AVL tree, or (less efficiently) by rebalancing periodically.
+
+Your assignment, then, is to add a rebalance() method to the BinarySearchTree class. Here's how I suggest you approach this: create an array or Vector or linked list or priority queue or whatever other data structure makes sense; remove each element in turn from the BSTree and insert that element into your second data structure. Next, reverse the process, moving events back into the BSTree, BUT be clever about how you do so: insert the median element first, then the elements that are medians of the two remaining halves (ranks N/4 and 3N/4), etc. This should generate a balanced BSTree. (You can use pIO() to check.)
+
+Also, create a CalendarEvent class. This should have Date and Time instance variables; you may use the DSDate class for the Date but you should write your own Time class. There should also be a String instance variable, to record the description of the CalendarEvent. The CalandarEvent class should implement the Comparable interface, and its compareTo method should work chronologically, so that instances with a later Date (or same Date and later Time) are considered "greater than" instances with a EARLIER Date/Time.
+
+Turn in: your modified BinarySearchTree class (with rebalance method), and your CalendarEvent and Time classes.
+
+Assignment (Part 2):
+
+This week, you will extend your work toward a basic appointment calendar. Last week you put together a basic CalendarEvent class, suitable for storing in a BinarySearchTree. This week, you'll create a HashMap of CalendarEvents. This means that each CalendarEvent must have a key, ideally a unique key. You could simply use the Java implementation of hashCode(), which returns an int value, but the problem is that CalendarEvents with identical contents may not have identical hashCodes; that will make retrieval difficult. So let's write a hashCode() method specifically for the CalendarEvent class.
+
+One way to generate a key would be to concatenate date and time information, so that for example 10:10am on Dec. 4, 2014 (12/04/2014) might be represented as 101004122014 (going from smallest time unit to largest) or perhaps 201412041010 (going the other way). But these numbers are too large to be Java ints! So we need a more clever solution, and ideally one that will give distinct hash code values for distinct date/time pairs. One helpful assumption would be that all events happen within the century starting Jan. 1, 2014; if this is the case, we can use two digits for the year instead of four. There are other creative ways to reduce the number of digits needed; think about what those might be. (Hint: with 365 days in a year, is it really necessary to use four digits (two for month and two for day) to represent the month/day information? Different hint: a string of digits can be treated as a String.)
+
+C1: Add a hashCode() method to your CalendarEvent class. It should take zero parameters and return an int, based only on the date/time information, not on the description. (Don't worry about the size of the hash table; just return an int.) You decide how to combine date/time information, but try to make distinct date/time combinations give different hashCode() results. Also make sure that, e.g., 5:00am and 5:00pm on the same date are treated as distinct date/times.
+
+C2: Write a driver program that creates a HashMap<Integer, CalendarEvent>; use your hashCode() method to get the key for a CalendarEvent. In whatever way you choose, generate a number of CalendarEvents to add to the HashMap, and then test that put(), get(), containsKey(), and remove() all work as you expect. (Note this includes checking sequences of actions, like creating a CalendarEvent that is not yet in the HashMap and checking containsKey(), put(), containsKey(), get(), remove(), containsKey() on that CalendarEvent.)
+
+You might look at the DemoHashMap program, as well as the programs from Parts A & B above, as examples of working with a HashMap. Unlike your program, DemoHashMap stores DSDate objects (I modified this class from the previous version to provide a super-simple hashCode() method) - your program will store CalendarEvents instead of DSDates.
